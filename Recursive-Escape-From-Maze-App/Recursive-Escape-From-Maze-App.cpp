@@ -1,4 +1,9 @@
 // Recursive-Escape-From-Maze-App.cpp 
+// Goal: Recursively find a path from a given starting point
+//       to an exit cell ('e'). The 'blind' exploratory process 
+//       is implemented using the following order go north, south, 
+//       east and finally west (if necessary.)
+// --------------------------------------------------------------------
 
 
 #include <iostream>
@@ -35,13 +40,13 @@ int main()
 
     if (path.size() == 0)
     {
-        cout << "No escape path was found\n";
+        cout << "\nNo escape path was found\n";
     }
     else
     {
-        cout << "A escape path is: " << endl;
+        cout << "\n\tA escape path is: " << endl;
         for (auto cell : path) {
-            cout << "( " << cell.first << ", " << cell.second << ")" << endl;
+            cout << "\t( " << cell.first << ", " << cell.second << ")" << endl;
         }
     }
     cout << "\nAll done!\n";
@@ -54,7 +59,7 @@ bool escape(vector<vector<char>>& maze, int row, int col, vector<pair<int, int>>
         col >= TCOLS || col < 0 ||
         maze[row][col] == '*' || maze[row][col] == 'b')
     {
-        return false;
+        return false;    //Bad cell - return, try other options (if any!)
     }
     
     //put current cell into the exit path
@@ -64,19 +69,20 @@ bool escape(vector<vector<char>>& maze, int row, int col, vector<pair<int, int>>
     if (maze[row][col] == 'e') return true;
 
     //General recursion - Initiate exploration from current cell
-    maze[row][col] = '*';           //mark cell as visited
+    maze[row][col] = '*';                           //mark cell as visited
 
     if (escape(maze, row - 1, col, path) ||         //go north
         escape(maze, row + 1, col, path) ||         //go south
         escape(maze, row, col + 1, path) ||         //go east
-        escape(maze, row, col - 1, path))            //go west
+        escape(maze, row, col - 1, path))           //go west
     {
-        return true;
+        return true;                                //success - solution found
     }
     else
     {
-        path.pop_back();
-        return false;
+        path.pop_back();                            //cell doesn't help
+        return false;                               //no solution from here
+                                                    //return, try pending options
     }
 
 }
